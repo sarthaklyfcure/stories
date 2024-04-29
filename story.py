@@ -897,6 +897,9 @@ def save_data_to_mysql(data_list):
         except mysql.connector.Error as err:
             print(f"Error: {err}")
 
+        except Exception as e:
+            print(f"Error: {e}")
+
         finally:
             if cursor is not None:
                 cursor.close()
