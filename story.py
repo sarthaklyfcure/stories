@@ -10,7 +10,6 @@ import pandas as pd
 import random
 import time
 import json
-from PIL import Image
 import http.client
 import io
 from tempfile import NamedTemporaryFile
