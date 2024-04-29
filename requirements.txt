@@ -1,0 +1,10 @@
+pip==23.3.2
+requests
+beautifulsoup4
+bs4
+openai==0.28
+streamlit
+mysql.connector
+pandas
+Pillow==8.4.0
+pytz
