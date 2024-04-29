@@ -948,8 +948,6 @@ def save_data_to_mysql(data_list):
         session.close()
 
 
-save_data_to_mysql(data_list)
-
 def main():
     # st.set_theme("dark")
 
