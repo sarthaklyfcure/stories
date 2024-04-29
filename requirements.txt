@@ -7,3 +7,4 @@ streamlit
 mysql.connector
 pandas
 pytz
+sqlalchemy
