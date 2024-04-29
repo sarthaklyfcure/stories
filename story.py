@@ -867,43 +867,88 @@ def bulk_upload(urls_list):
             st.error("Data extraction failed.")
             time.sleep(10)                
 
-def save_data_to_mysql(data_list):
+# def save_data_to_mysql(data_list):
 
-    for data in data_list:
+#     for data in data_list:
           
-        conn = None
-        cursor = None
-        try:
-            table = "stories"
-            conn = mysql.connector.connect(
-                host="db-mysql-blr1-66101-do-user-14701997-0.c.db.ondigitalocean.com:25060",
-                user="doadmin",
-                password="AVNS_PRebzSPvX1QPfimNbc5",
-                database="doadmin"
-            )
+#         conn = None
+#         cursor = None
+#         try:
+#             table = "stories"
+#             conn = mysql.connector.connect(
+#                 host="db-mysql-blr1-66101-do-user-14701997-0.c.db.ondigitalocean.com:25060",
+#                 user="doadmin",
+#                 password="AVNS_PRebzSPvX1QPfimNbc5",
+#                 database="doadmin"
+#             )
 
-            cursor = conn.cursor()
+#             cursor = conn.cursor()
 
-            insert_query = f"INSERT INTO {table} ({', '.join(data.keys())}) VALUES ({', '.join(['%s']*len(data))})"
+#             insert_query = f"INSERT INTO {table} ({', '.join(data.keys())}) VALUES ({', '.join(['%s']*len(data))})"
 
-            values = tuple(data.values())
-            cursor.execute(insert_query, values)
+#             values = tuple(data.values())
+#             cursor.execute(insert_query, values)
 
-            conn.commit()
+#             conn.commit()
 
-            st.write("Data successfully inserted into the database!")
+#             st.write("Data successfully inserted into the database!")
 
-        except mysql.connector.Error as err:
-            print(f"Error: {err}")
+#         except mysql.connector.Error as err:
+#             print(f"Error: {err}")
 
-        except Exception as e:
-            print(f"Error: {e}")
+#         except Exception as e:
+#             print(f"Error: {e}")
 
-        finally:
-            if cursor is not None:
-                cursor.close()
-            if conn is not None:
-                conn.close()                      
+#         finally:
+#             if cursor is not None:
+#                 cursor.close()
+#             if conn is not None:
+#                 conn.close() 
+
+from sqlalchemy import create_engine, Column, String, MetaData, Table
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+
+def save_data_to_mysql(data_list):
+    # Define the database connection
+    DATABASE_URL = "mysql://doadmin:AVNS_PRebzSPvX1QPfimNbc5@db-mysql-blr1-66101-do-user-14701997-0.c.db.ondigitalocean.com:25060/doadmin"
+    engine = create_engine(DATABASE_URL)
+    
+    # Create a base class for declarative class definitions
+    Base = declarative_base()
+
+    # Define your table
+    class Story(Base):
+        __tablename__ = 'stories'
+        id = Column(String, primary_key=True)
+        # Add other columns as needed
+        # For example:
+        # title = Column(String)
+        # content = Column(String)
+        # date = Column(DateTime)
+
+    # Create the table in the database
+    Base.metadata.create_all(engine)
+
+    # Create a session
+    Session = sessionmaker(bind=engine)
+    session = Session()
+
+    try:
+        for data in data_list:
+            # Create a new Story object and add it to the session
+            story = Story(id=data['id'])  # Adjust this based on your data structure
+            session.add(story)
+        session.commit()
+        print("Data successfully inserted into the database!")
+    except Exception as e:
+        print(f"Error: {e}")
+        session.rollback()  # Rollback the transaction in case of error
+    finally:
+        session.close()
+
+
+save_data_to_mysql(data_list)
 
 def main():
     # st.set_theme("dark")
