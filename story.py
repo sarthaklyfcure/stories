@@ -853,6 +853,11 @@ def bulk_upload(urls_list):
             st.success("Data extraction successful!")
                             
             responses = main_format(result, urls_list[i])
+            if responses:
+                st.success("Data submission successful!")
+            else:
+                st.error("Data submission failed.")
+
             # st.write("Generated Responses:")
             # st.write(responses)
                         
