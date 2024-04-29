@@ -867,7 +867,6 @@ def bulk_upload(urls_list):
             st.error("Data extraction failed.")
             time.sleep(10)                
 
-@st.cache_data(show_spinner=False)
 def save_data_to_mysql(data_list):
 
     for data in data_list:
